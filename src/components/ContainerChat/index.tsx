@@ -53,7 +53,6 @@ const ContainerChat = () => {
   }, [messages, loading]);
 
   const handleChange = (__: React.SyntheticEvent, newValue: string) => {
-    console.log(newValue, typeof newValue);
     setValue(newValue);
   };
   return (
@@ -80,11 +79,7 @@ const ContainerChat = () => {
           </Box>
         </TabContext>
 
-        {value === "2" && (
-          <Box width="100%" height="100%">
-            <OrderList />
-          </Box>
-        )}
+        {value === "2" && <OrderList />}
         {value === "1" && (
           <>
             <Box display="flex" alignItems="center" gap="0.5rem" padding="1rem">

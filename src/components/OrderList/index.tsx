@@ -8,9 +8,8 @@ import { useChat } from "@/context";
 
 const OrderList = () => {
   const { ordersList } = useChat();
-  console.log(ordersList);
   return (
-    <Box display="flex" flexDirection="column" gap="1rem" width="100%">
+    <Box height="80%" width="100%">
       <Box display="flex" alignItems="center" gap="0.5rem" padding="1rem">
         <Box
           sx={{ background: "#A8DDFD" }}
@@ -27,22 +26,24 @@ const OrderList = () => {
           Histórico de pedidos
         </Typography>
       </Box>
-      <Box display="flex" flexDirection="column" width="100%">
-        {ordersList.map((item, index) => (
-          <Box sx={{ padding: "1rem" }} key={index}>
-            <Paper elevation={3}>
-              <MarkdownPreview
-                source={item}
-                style={{
-                  padding: 8,
-                  width: "100%",
-                  background: "transparent",
-                  color: "black",
-                }}
-              />
-            </Paper>
-          </Box>
-        ))}
+      <Box display="flex" flexDirection="column" width="100%" maxHeight="100%">
+        <Box height="100%" sx={{ overflowY: "auto" }}>
+          {ordersList.map((item, index) => (
+            <Box sx={{ padding: "1rem" }} key={index}>
+              <Paper elevation={3}>
+                <MarkdownPreview
+                  source={item}
+                  style={{
+                    padding: 8,
+                    width: "100%",
+                    background: "transparent",
+                    color: "black",
+                  }}
+                />
+              </Paper>
+            </Box>
+          ))}
+        </Box>
       </Box>
     </Box>
   );
