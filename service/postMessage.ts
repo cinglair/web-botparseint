@@ -1,5 +1,11 @@
-export const postMessage = async (message: string) => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/bot/new?idUser=2&idRestaurant=1`;
+export const postMessage = async ({
+  message,
+  idUser,
+}: {
+  message: string;
+  idUser: string;
+}) => {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/bot/new?idUser=${idUser}&idRestaurant=1`;
   const res = await fetch(url, {
     method: "POST",
     headers: {

@@ -7,6 +7,8 @@ import {
 } from "react";
 import { getMessages } from "../../service/getMessages";
 import { postMessage } from "../../service/postMessage";
+import { getNewUser } from "../../service/getNewUser";
+import { getOrdersList } from "../../service/getOrdersList";
 
 interface Message {
   user: string;
@@ -16,6 +18,7 @@ interface Message {
 interface ChatContextType {
   loading: boolean;
   messages: Message[];
+  ordersList: string[];
   handleAddMessage: (message: Message) => void;
   addMessage: (message: Message) => void;
   clearMessages: () => void;
@@ -29,16 +32,56 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
   const addMessage = (message: Message) => {
     setMessages((prevMessages) => [...prevMessages, message]);
   };
+  const [userId, setUserId] = useState<string | null>(
+    localStorage.getItem("userId")
+  );
+
+  const [ordersList, setOrdersList] = useState<string[]>([]);
+
+  async function getUserId() {
+    if (!userId) {
+      try {
+        const response = await getNewUser();
+        const { id } = response;
+        localStorage.setItem("userId", String(id));
+        setUserId(String(id));
+      } catch (error) {
+        console.error("Erro ao obter novo usuário:", error);
+      }
+    } else setUserId(userId);
+  }
+
+  async function getOrderList() {
+    if (userId) {
+      try {
+        const data = await getOrdersList({ userId: String(userId!) });
+        const { response } = data;
+        setOrdersList(response);
+      } catch (error) {
+        console.error("Erro ao obter novo usuário:", error);
+      }
+    }
+  }
 
   useEffect(() => {
+    getOrderList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, userId]);
+
+  useEffect(() => {
+    getUserId();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
     getMessages({
-      idUser: 2,
+      idUser: Number(userId),
       idRestaurant: 1,
       limit: 10,
       offset: 0,
     })
       .then((response) => {
-        console.log("response", response);
         setMessages(
           response.reverse().map((message) => ({
             user: message.user,
@@ -49,7 +92,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
       .catch((error) => {
         console.error("Erro ao buscar mensagens:", error);
       });
-  }, []);
+  }, [userId]);
 
   const sendMessage = async (message: Message) => {
     if (!message) return;
@@ -57,7 +100,10 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     const lastMessage = message;
     try {
       setLoading(true);
-      const response = await postMessage(lastMessage.message);
+      const response = await postMessage({
+        message: lastMessage.message,
+        idUser: userId!,
+      });
       setMessages((prevMessages) => [
         ...prevMessages,
         { user: "bot", message: response },
@@ -80,7 +126,14 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ChatContext.Provider
-      value={{ messages, loading, addMessage, clearMessages, handleAddMessage }}
+      value={{
+        messages,
+        loading,
+        ordersList,
+        addMessage,
+        clearMessages,
+        handleAddMessage,
+      }}
     >
       {children}
     </ChatContext.Provider>
