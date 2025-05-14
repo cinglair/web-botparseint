@@ -4,7 +4,6 @@ import { Box, styled } from "@mui/system";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 
-// Estilos utilizando styled
 const MessageRow = styled("div")({
   display: "flex",
 });

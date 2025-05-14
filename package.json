@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack --port 3020",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -22,7 +22,8 @@
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "styled-components": "^6.1.16"
+    "styled-components": "^6.1.16",
+    "web-botparseint": "file:"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
